@@ -21,8 +21,6 @@ contract Lottery {
     }
 
     function pickWinner() public onlyManager {
-        require(players.length > 0);
-
         uint random = randomNumberGenerator() % players.length;
         payable(players[random]).transfer(address(this).balance);
         players = new address[](0);
