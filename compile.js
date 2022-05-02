@@ -21,8 +21,11 @@ const input = {
   }
 };
 
-let output = JSON.parse(solc.compile(JSON.stringify(input))).contracts[
+const output = JSON.parse(solc.compile(JSON.stringify(input))).contracts[
   "Lottery.sol"
-].Lottery;
+];
 
-module.exports = output;
+module.exports = {
+  bytecode: output.Lottery.evm.bytecode.object,
+  abi: output.Lottery.abi
+};

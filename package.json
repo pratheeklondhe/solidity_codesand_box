@@ -5,7 +5,8 @@
   "license": "MIT",
   "dependencies": {
     "ganache": "7.1.0",
-    "solc": "0.8.13"
+    "solc": "0.8.13",
+    "web3": "1.7.3"
   },
   "scripts": {
     "start": "node index.js"
