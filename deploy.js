@@ -7,7 +7,7 @@ const provider = new HDWalletProvider({
 		phrase:
 			'fun device gentle try sauce risk effort sound net bone define chase'
 	},
-	providerOrUrl: 'https://goerli.infura.io/v3/0cf52fce48db492282b6d25ad739f828'
+	providerOrUrl: 'https://rinkeby.infura.io/v3/0cf52fce48db492282b6d25ad739f828'
 });
 const web3 = new Web3(provider);
 

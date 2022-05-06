@@ -9,11 +9,31 @@ const compiledCampaign = require('../builds/Campaign.json');
 let campaign;
 let accounts;
 
-beforeEach(async () => {
+// beforeEach(
+(async () => {
 	accounts = await web3.eth.getAccounts();
 
-	campaign = await new web3.eth.Contract(JSON.parse(compiledCampaign.abi))
+	let campaignFactory = await new web3.eth.Contract(compiledFactory.abi)
 		.deploy({ data: compiledFactory.evm.bytecode.object })
 		.send({ from: accounts[0], gas: '10000000' });
+
+	await campaignFactory.methods.createCampaign(1).send({
+		from: accounts[0],
+		gas: '1000000'
+	});
+
+	const deployedCampaigns = await campaignFactory.methods
+		.getDeployedCampaigns()
+		.call({
+			from: accounts[0],
+			gas: '1000000'
+		});
+
+	campaign = await new web3.eth.Contract(
+		compiledCampaign.abi,
+		deployedCampaigns[0]
+	);
+
 	console.log(campaign);
-});
+})();
+// );

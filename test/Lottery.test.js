@@ -16,7 +16,7 @@ beforeEach(async () => {
 		.send({ from: accounts[0], gas: '1000000' });
 });
 
-describe('Lottery Contract Test Suite', () => {
+xdescribe('Lottery Contract Test Suite', () => {
 	it('deploys contract', () => {
 		assert.ok(lottery);
 	});
