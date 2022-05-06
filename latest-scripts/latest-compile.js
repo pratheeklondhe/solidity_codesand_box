@@ -21,15 +21,15 @@ const input = {
 		}
 	}
 };
-fs.removeSync(buildPath);
+// fs.removeSync(buildPath);
 
 const output = JSON.parse(solc.compile(JSON.stringify(input))).contracts[
 	'Campaign.sol'
 ];
 
 for (let contract in output) {
-	console.log(Object.keys(output[contract]));
-	fs.outputJsonSync(buildPath + '/' + contract + '.json', output[contract]);
+	console.log(Object.keys(output[contract].evm));
+	// fs.outputJsonSync(buildPath + '/' + contract + '.json', output[contract]);
 }
 
 console.log('Compiled and outputted to builds folder');
