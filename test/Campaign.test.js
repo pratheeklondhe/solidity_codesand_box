@@ -32,27 +32,53 @@ beforeEach(async () => {
 		compiledCampaign.abi,
 		deployedCampaigns[0]
 	);
-
-	console.log(campaign);
 });
 
 describe('Campaign Tests', () => {
-	it('should create', () => {
+	it('should create campaign', () => {
+		console.log('HGHGHGHG', Object.keys(campaign.methods));
 		assert.ok(campaign);
 	});
 
-	it('should create campaign', async () => {
-		await campaign.methods.createCampaign(1).send({
-			from: accounts[0],
+	it('should add Contributors', async () => {
+		await campaign.methods.addContributors().send({
+			from: accounts[1],
 			value: web3.utils.toWei('2', 'ether')
 		});
 
-		const deployedCampaigns = await campaign.methods
-			.getDeployedCampaigns()
+		const contributorsCount = await campaign.methods.contributorsCount().call({
+			from: accounts[0]
+		});
+
+		const isContributor = await campaign.methods
+			.contributors(accounts[1])
 			.call({
-				from: accounts[0]
+				from: accounts[6]
 			});
 
-		assert.equal(deployedCampaigns.length, 1);
+		assert.equal(contributorsCount, 1);
+		assert.equal(isContributor, true);
+
+		await campaign.methods.raiseRequest('Test Request', 1, accounts[3]).send({
+			from: accounts[6],
+			value: web3.utils.toWei('1', 'ether')
+		});
+
+		// const request = await campaign.methods
+		// 	.requests(0)
+		// 	.call({ from: accounts[0], value: web3.utils.toWei('2', 'ether') });
+
+		// assert.ok(request);
+		// console.log('Req', request);
 	});
+
+	// it('should raise request', async () => {
+	// 	const isContributor = await campaign.methods
+	// 		.contributors(accounts[1])
+	// 		.call({
+	// 			from: accounts[0]
+	// 		});
+
+	// 	console.log('dsadsadsadsa', isContributor);
+	// });
 });
