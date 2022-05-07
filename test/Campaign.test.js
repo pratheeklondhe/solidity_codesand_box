@@ -9,8 +9,7 @@ const compiledCampaign = require('../builds/Campaign.json');
 let campaign;
 let accounts;
 
-// beforeEach(
-(async () => {
+beforeEach(async () => {
 	accounts = await web3.eth.getAccounts();
 
 	let campaignFactory = await new web3.eth.Contract(compiledFactory.abi)
@@ -35,5 +34,25 @@ let accounts;
 	);
 
 	console.log(campaign);
-})();
-// );
+});
+
+describe('Campaign Tests', () => {
+	it('should create', () => {
+		assert.ok(campaign);
+	});
+
+	it('should create campaign', async () => {
+		await campaign.methods.createCampaign(1).send({
+			from: accounts[0],
+			value: web3.utils.toWei('2', 'ether')
+		});
+
+		const deployedCampaigns = await campaign.methods
+			.getDeployedCampaigns()
+			.call({
+				from: accounts[0]
+			});
+
+		assert.equal(deployedCampaigns.length, 1);
+	});
+});
