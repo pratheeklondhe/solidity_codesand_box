@@ -16,7 +16,7 @@ beforeEach(async () => {
 		.deploy({ data: compiledFactory.evm.bytecode.object })
 		.send({ from: accounts[0], gas: '10000000' });
 
-	await campaignFactory.methods.createCampaign(1).send({
+	await campaignFactory.methods.createCampaign(150).send({
 		from: accounts[0],
 		gas: '1000000'
 	});
@@ -54,7 +54,7 @@ describe('Campaign Tests', () => {
 		const isContributor = await campaign.methods
 			.contributors(accounts[1])
 			.call({
-				from: accounts[6]
+				from: accounts[0]
 			});
 
 		assert.equal(contributorsCount, 1);
@@ -65,11 +65,10 @@ describe('Campaign Tests', () => {
 			gas: '10000000'
 		});
 
-		const request = await campaign.methods
+		let request = await campaign.methods
 			.requests(0)
 			.call({ from: accounts[0] });
 
-		console.log('Req', request);
 		assert.ok(request);
 		assert.equal(request.isFinalized, false);
 
@@ -78,19 +77,22 @@ describe('Campaign Tests', () => {
 			gas: '10000000'
 		});
 
-		const req = await campaign.methods.requests(0).call({ from: accounts[0] });
+		request = await campaign.methods.requests(0).call({ from: accounts[0] });
 
-		console.log('Req1', request);
-		assert.equal(req.approvalCount, '1');
+		assert.equal(request.approvalCount, '1');
+
+		const initialBalance = await web3.eth.getBalance(accounts[3]);
+
+		await campaign.methods.finalizeRequest(0).send({
+			from: accounts[0],
+			gas: '10000000'
+		});
+
+		const finalBalance = await web3.eth.getBalance(accounts[3]);
+
+		request = await campaign.methods.requests(0).call({ from: accounts[0] });
+
+		assert.equal(request.isFinalized, true);
+		assert(finalBalance > initialBalance);
 	});
-
-	// it('should raise request', async () => {
-	// 	const isContributor = await campaign.methods
-	// 		.contributors(accounts[1])
-	// 		.call({
-	// 			from: accounts[0]
-	// 		});
-
-	// 	console.log('dsadsadsadsa', isContributor);
-	// });
 });
