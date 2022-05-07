@@ -43,7 +43,8 @@ describe('Campaign Tests', () => {
 	it('should add Contributors', async () => {
 		await campaign.methods.addContributors().send({
 			from: accounts[1],
-			value: web3.utils.toWei('2', 'ether')
+			value: web3.utils.toWei('2', 'ether'),
+			gas: '10000000'
 		});
 
 		const contributorsCount = await campaign.methods.contributorsCount().call({
@@ -59,17 +60,28 @@ describe('Campaign Tests', () => {
 		assert.equal(contributorsCount, 1);
 		assert.equal(isContributor, true);
 
-		await campaign.methods.raiseRequest('Test Request', 1, accounts[3]).send({
-			from: accounts[6],
-			value: web3.utils.toWei('1', 'ether')
+		await campaign.methods.raiseRequest('Test Request', '1', accounts[3]).send({
+			from: accounts[0],
+			gas: '10000000'
 		});
 
-		// const request = await campaign.methods
-		// 	.requests(0)
-		// 	.call({ from: accounts[0], value: web3.utils.toWei('2', 'ether') });
+		const request = await campaign.methods
+			.requests(0)
+			.call({ from: accounts[0] });
 
-		// assert.ok(request);
-		// console.log('Req', request);
+		console.log('Req', request);
+		assert.ok(request);
+		assert.equal(request.isFinalized, false);
+
+		await campaign.methods.vote(0).send({
+			from: accounts[1],
+			gas: '10000000'
+		});
+
+		const req = await campaign.methods.requests(0).call({ from: accounts[0] });
+
+		console.log('Req1', request);
+		assert.equal(req.approvalCount, '1');
 	});
 
 	// it('should raise request', async () => {
