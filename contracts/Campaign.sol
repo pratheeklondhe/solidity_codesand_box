@@ -78,6 +78,18 @@ contract Campaign {
         r.isFinalized = true;
     }
 
+    function getCampaignDetails() public returns(
+        uint, address, uint, uint, uint
+    ) {
+        return (
+            minAmnt,
+            manager,
+            contributorsCount,
+            address(this).balance,
+            requests.length
+        );
+    }
+
     modifier onlyManager {
         require(msg.sender == manager);
         _;
